@@ -1,0 +1,26 @@
+{
+  "name": "modbus-tcp-ip",
+  "version": "0.0.0",
+  "description": "A simple interface for Modbus over TCP/IP",
+  "main": "script.js",
+  "scripts": {
+    "test": "node script.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tbarnhill/modbus-tcp-ip.git"
+  },
+  "keywords": [
+    "modbus",
+    "tcp",
+    "ip",
+    "ethernet",
+    "network"
+  ],
+  "author": "Tyler Barnhill",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tbarnhill/modbus-tcp-ip/issues"
+  },
+  "homepage": "https://github.com/tbarnhill/modbus-tcp-ip#readme"
+}
