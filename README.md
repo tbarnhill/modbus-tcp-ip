@@ -9,6 +9,7 @@ i.e
 'q_w418'  - Holding register 418 
 ```
 #### Applicable Datatypes
+``` text
 Data Type                  Short Hand   Size        Accessibility     
 Descrite Input             i_b          1 Bit       Read Only
 Coil                       q_b          1 Bit       Read / Write
