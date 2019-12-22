@@ -10,16 +10,6 @@ Input Register             i_w          16 Bits     Read Only
 Holding Register           q_w          16 Bits     Read / Write
 ```
 
-#### Exports
-    ipAddress  - Ip Address requests will be sent to
-    port - Port requests will be sent to. Usually 502
-    log -  Can be set to 'True' to log all trafic on the console
-    client - Inhearits from the 'Net' module 
-
-    read([address],[callback])
-    write([address],[value],[callback])
-  
-
 ##### Read and Write
 ``` javascript
 const modbus = require('modbus-tcp-ip')
