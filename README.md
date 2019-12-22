@@ -2,11 +2,13 @@
 A simple interface for Modbus over TCP/IP
 
 #### Applicable Datatypes
+``` text
 Data Type                  Short Hand   Size        Accessibility     
 Descrite Input             i_b          1 Bit       Read Only
 Coil                       q_b          1 Bit       Read / Write
 Input Register             i_w          16 Bits     Read Only
 Holding Register           q_w          16 Bits     Read / Write
+```
 
 #### Exports
     ipAddress  - Ip Address requests will be sent to
@@ -16,6 +18,7 @@ Holding Register           q_w          16 Bits     Read / Write
 
     read([address],[callback])
     write([address],[value],[callback])
+  
 
 ##### Read and Write
 ``` javascript
