@@ -5,7 +5,7 @@
     *Holding Register   q_w      16 Bits    Read / Write
  */
 
-module.exports = new ModbusTcp()
+module.exports = ModbusTcp()
 
 function ModbusTcp(ipAddress,port){
     let net = require('net')
