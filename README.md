@@ -1,4 +1,4 @@
-# modbus-tcp
+# modbus-tcp-ip
 A simple interface for Modbus over TCP/IP
 
 #### Applicable Datatypes
