@@ -4,7 +4,6 @@ A simple interface for Modbus over TCP/IP
 #### Address Syntax
 ``` text
 Short Hand+Register Number
-
 i.e 
 'i_b8'    - Descrite Input 8
 'q_w418'  - Holding register 418 
@@ -23,17 +22,17 @@ Holding Register           q_w          16 Bits     Read / Write
 ``` javascript
 const modbus = require('modbus-tcp-ip')
 
-//Multiple Devises can be added
+//Multiple devices can be added
 const deviceA = new modbus.device('192.168.0.1',502)
 const deviceB = new modbus.device('192.168.0.2',502)
 
-//Read descrite input at address 1
+//Read discrete input at address 1
 deviceA.read('i_b1',(err,res)=>{
         if(err){throw err}
         console.log(res)
 })
 
-//Write Coil at address 412
+//Write a coil at address 412
 deviceA.write('q_b412',true,(err,res)=>{
         if(err){throw err}
         console.log(res)
