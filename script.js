@@ -1,8 +1,8 @@
-/**
-    *Discrete Input     i_b       1 Bit     Read Only
-    *Coil               q_b       1 Bit     Read / Write
-    *Input Register     i_w      16 Bits    Read Only
-    *Holding Register   q_w      16 Bits    Read / Write
+/**                                                         Read FC     Write FC
+    *Discrete Input     i_b       1 Bit     Read Only       2           -      
+    *Coil               q_b       1 Bit     Read / Write    1           5
+    *Input Register     i_w      16 Bits    Read Only       4           -
+    *Holding Register   q_w      16 Bits    Read / Write    3           6
  */
 
 module.exports = {
@@ -26,9 +26,9 @@ function ModbusTcp(ipAddress,port){
     
         
          this.client.on('data',(res,err)=>{
-                let hex = Buffer.from(res).toString('hex') //convert response to hexadecimal 
-                if(this.log==true){console.log('rx '+hex)}
-                if(callback){callback(err,res)}  
+                let buf = Buffer.from(res)
+                if(this.log==true){console.log('rx '+ buf.toString('hex') )}
+                if(callback){callback(err,buf)}  
          })
          this.client.on('close',(err)=>{   
                 err = 'Connection Closed'
@@ -38,10 +38,9 @@ function ModbusTcp(ipAddress,port){
     this.read = (address,callback)=>{
         let funcCode = getFuncCode(address,'read')
         address = address.substr(3)
-        let hexString = makeDataPacket(1,0,1,funcCode,address,0)
-    
-        this.sendTCP(hexString,0,(err,res)=>{
-            if(callback){callback(err,res)}
+        let hexString = makeDataPacket(1,0,1,funcCode,address,1)
+        this.sendTCP(hexString,(err,res)=>{
+            if(callback){callback(err,res[9])}
         })
     }
     this.write = (address,value,callback)=>{
@@ -93,13 +92,17 @@ function ModbusTcp(ipAddress,port){
 }
 
 function makeDataPacket(transId,protoId,unitId,funcCode,address,data){
+    
+
     address = address -1
+    let length = 6 
 
     unitId = decToHex(unitId)
     transId = decToHex(transId)
     protoId = decToHex(protoId)
     funcCode = decToHex(funcCode)
     address = decToHex(address)
+    length = decToHex(length)
     data = decToHex(data)
 
     unitId = makeHexConstantSize(unitId,2)
@@ -107,9 +110,8 @@ function makeDataPacket(transId,protoId,unitId,funcCode,address,data){
     protoId = makeHexConstantSize(protoId,4)
     funcCode = makeHexConstantSize(funcCode,2)
     address = makeHexConstantSize(address,4)
+    length = makeHexConstantSize(length,4)
     data = makeHexConstantSize(data,4)
-
-    let length = '0006'
 
     function makeHexConstantSize(data,outputCharCount){
         //Note 2 hex chars = 1 byte
