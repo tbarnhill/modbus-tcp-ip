@@ -1,6 +1,6 @@
 {
   "name": "modbus-tcp-ip",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A simple interface for Modbus over TCP/IP",
   "main": "script.js",
   "scripts": {

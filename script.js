@@ -10,37 +10,35 @@ module.exports = {
     makeDataPacket:makeDataPacket
 }
 
-function ModbusTcp(ipAddress,port){
+function ModbusTcp(ipAddress,port,unitId){
     let net = require('net')
     this.client = new net.Socket()
     this.client.setEncoding('utf8')
     this.ipAddress = ipAddress
     this.port = port
-    this.log = true
+    this.unitId = unitId
+    this.log = false
 
+    let tcpCallback //allows callback to be set in sendTCP and called in 'On Data' event
     this.sendTCP=(data,callback)=>{
         if(this.log==true){console.log('tx '+data)}
         let buffer = Buffer.from(data, "hex")
         if(this.isOpen()){this.client.write(buffer)}
         else{this.connect(()=>{this.client.write(buffer)})}
-    
-        
-         this.client.on('data',(res,err)=>{
-                let buf = Buffer.from(res)
-                if(this.log==true){console.log('rx '+ buf.toString('hex') )}
-                if(callback){callback(err,buf)}  
-         })
-         this.client.on('close',(err)=>{   
-                err = 'Connection Closed'
-                if(callback){callback(err,null)}
-         })
+        if(callback){tcpCallback=callback}else{tcpCallback=null}
     }
+    this.client.on('data',(res,err)=>{
+        let buf = Buffer.from(res)
+        if(this.log==true){console.log('rx '+ buf.toString('hex') )}
+        if(tcpCallback){tcpCallback(err,buf)}  
+        this.client.destroy()
+    })
     this.read = (address,callback)=>{
         let funcCode = getFuncCode(address,'read')
         address = address.substr(3)
         let hexString = makeDataPacket(1,0,1,funcCode,address,1)
         this.sendTCP(hexString,(err,res)=>{
-            if(callback){callback(err,res[9])}
+            if(callback){callback(err,res[res.length-1])}
         })
     }
     this.write = (address,value,callback)=>{
@@ -49,7 +47,7 @@ function ModbusTcp(ipAddress,port){
     
         if (funcCode==5&&value==true){value = 65280} // To force a coil on you send FF00 not 0001
     
-        let hexString = makeDataPacket(1,0,1,funcCode,address,value)
+        let hexString = makeDataPacket(1,0,this.unitId,funcCode,address,value)
     
         this.sendTCP(hexString,(err,res)=>{
             if(callback){callback(err,res)}
@@ -118,7 +116,7 @@ function makeDataPacket(transId,protoId,unitId,funcCode,address,data){
         let inputCharCount = data.length
         let charsToAdd = outputCharCount - inputCharCount
         if(charsToAdd<0){
-            throw 'input hex char count is greater then the output'
+            throw "input hex char count for '"+ data +"' is greater then the output"
         }
       
         let adder = ''
