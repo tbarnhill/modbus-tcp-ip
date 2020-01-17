@@ -1,10 +1,3 @@
-/**                                                         Read FC     Write FC
-    *Discrete Input     i_b       1 Bit     Read Only       2           -      
-    *Coil               q_b       1 Bit     Read / Write    1           5
-    *Input Register     i_w      16 Bits    Read Only       4           -
-    *Holding Register   q_w      16 Bits    Read / Write    3           6
- */
-
 module.exports = {
     device:ModbusTcp,
     makeDataPacket:makeDataPacket
@@ -13,7 +6,6 @@ module.exports = {
 function ModbusTcp(ipAddress,port,unitId){
     let net = require('net')
     this.client = new net.Socket()
-    //this.client = net.createConnection(port,ipAddress,()=>{})
     this.client.setEncoding('hex')
     this.ipAddress = ipAddress
     this.port = port
@@ -31,15 +23,8 @@ function ModbusTcp(ipAddress,port,unitId){
         let buffer = Buffer.from(data, "hex")
         if(this.client.writable){this.client.write(buffer)}
         else{this.connect(()=>{this.client.write(buffer)})}
-
-
-        //let tid = parseInt(data.substr(0,4),16)
-        
-
-        
     }
     this.client.on('data',(res)=>{
-
         if(this.log==true){console.log('rx '+ res)}
 
         let modbusRes = parseResponse(res)
@@ -54,7 +39,6 @@ function ModbusTcp(ipAddress,port,unitId){
             this.packets[tid].onResponce(err,value)
         } 
         
-        //this.client.destroy()
     })
     this.client.on('close',()=>{
         this.online=false
