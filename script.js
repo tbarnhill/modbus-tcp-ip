@@ -10,7 +10,7 @@ function ModbusTcp(ipAddress,port,unitId){
     this.ipAddress = ipAddress
     this.port = port
     this.unitId = unitId
-    this.log = false
+    this.log = true
     let lastTid = 1
     this.online = false
     this.timeout = 10000
