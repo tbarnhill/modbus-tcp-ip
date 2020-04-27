@@ -7,9 +7,9 @@ A simple interface for Modbus over TCP/IP
 ``` javascript
 const modbus = require('modbus-tcp-ip')
 
-//Multiple devices can be added
-const deviceA = new modbus.device('192.168.0.1',502)
-const deviceB = new modbus.device('192.168.0.2',502)
+//Multiple devices can be added 
+const deviceA = new modbus.device('192.168.0.1',502,1)//([ipAddress],[port],[unitId])
+const deviceB = new modbus.device('192.168.0.2',502,1)
 
 //Read discrete input at address 1
 deviceA.read('i_b1',(err,res)=>{

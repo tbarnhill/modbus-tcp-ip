@@ -17,6 +17,8 @@ function ModbusTcp(ipAddress,port,unitId){
     this.packetBufferLength = 100
     this.packets = []
 
+    if(!unitId){this.unitId=1}
+
 
     this.sendTCP=(data,callback)=>{
         if(this.log==true){console.log('tx '+data)}
