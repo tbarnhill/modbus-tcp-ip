@@ -126,7 +126,7 @@ function ModbusTcp(ipAddress,port,unitId){
     }
     
     let getTid=()=>{
-        if(this.lastTid==this.packetBufferLength){this.lastTid=0}
+        if(lastTid>this.packetBufferLength){lastTid=0}
         return lastTid++
     }
    
