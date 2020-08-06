@@ -1,7 +1,7 @@
 # modbus-tcp-ip
 A simple interface for Modbus over TCP/IP
 * Read and write modbus registers
-* Supports for promises and callbacks 
+* Support for promises and callbacks 
 
 
 # Quick Example
