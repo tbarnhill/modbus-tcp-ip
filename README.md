@@ -1,57 +1,75 @@
 # modbus-tcp-ip
 A simple interface for Modbus over TCP/IP
+* Read and write modbus registers
+* Supports for promisises and callbacks 
 
 
-
-##### Read and Write
+# Quick Example
 ``` javascript
 const modbus = require('modbus-tcp-ip')
+const device = modbus(ipAdress,port,unitId)
 
-//Multiple devices can be added 
-const deviceA = new modbus.device('192.168.0.1',502,1)//([ipAddress],[port],[unitId])
-const deviceB = new modbus.device('192.168.0.2',502,1)
+//Read
+let myCoil = await device.read('c0')
+let myHoldingRegister = await device.read('hr0') 
+let myHoldingRegisters = await device.read('hr1-2') 
 
-//Disable console logging
-deviceA.log=false
-
-//Read discrete input at address 1
-deviceA.read('i_b1',(err,res)=>{
-        if(err){throw err}
-        console.log(res)
-})
-
-//Write a coil at address 412
-deviceA.write('q_b412',true,(err,res)=>{
-        if(err){throw err}
-        console.log(res)
-})
-
-//Read holding register 1
-deviceA.read('q_w1',(err,res)=>{
-        if(err){throw err}
-        console.log(res)
-})
+//Write
+await device.write('c0',true)
+await device.write('hr0',15)
 
 ```
-#### Address Syntax
-``` text
-Short Hand+Register Number
-i.e 
-'i_b8'    - Descrite Input 8
-'q_w418'  - Holding register 418 
+
+# Device Object 
+## Constructor 
+``` javascript
+const modbus = require('modbus-tcp-ip')
+const device = modbus(ipAdress,port,unitId)
 ```
-#### Applicable Datatypes
-``` text
+
+
+## Properties 
+
+* ipAddress
+* port
+* unitId
+* timeout
+* online 
+
+## Methods
+
+### read(address,[callback])
+* address - Coil or register to read. 
+* callback(err,res) - Optional.
+
+### write(address,value,[callback])
+* address - Coil or register to read. 
+* value - Data to write. 
+* callback(err,res) - Optional.
+
+
+
+
+# Address Syntax
+[Short Hand + Register Number]
+
+##### i.e.
+* 'i8'        - Descrite Input 8
+* 'hr418'     - Holding Register 418 
+* 'hr418-419' - Holding Registers 418 through 419
+
+##### Applicable Datatypes
+```
 Data Type                  Short Hand   Size        Accessibility     
-Descrite Input             i_b          1 Bit       Read Only
-Coil                       q_b          1 Bit       Read / Write
-Input Register             i_w          16 Bits     Read Only
-Holding Register           q_w          16 Bits     Read / Write
-
-"i" indicates the register is read only (Descrite Inputs and Input Registers)
-"q" indicates the register is read/write (Coils and Holding Registers)
-"b" indicates the register is 1 bit (Coils and Descrite Inputs)
-"w" indicates the register is 16 bit/1 word (Input and Holding Registers)
-
-
+Descrite Input             i            1 Bit       Read Only
+Coil                       c            1 Bit       Read / Write
+Input Register             ir           16 Bits     Read Only
+Holding Register           hr           16 Bits     Read / Write
 ```
+
+
+
+
+
+
+
