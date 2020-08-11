@@ -7,7 +7,7 @@ A simple interface for Modbus over TCP/IP
 # Quick Example
 ``` javascript
 const modbus = require('modbus-tcp-ip')
-const device = modbus(ipAdress,port,unitId)
+const device = modbus(ipAddress,port,unitId)
 
 //Read
 let myCoil = await device.read('c0')
