@@ -157,6 +157,7 @@ function parseResponse(buf){
     res.unitId    = buf.readInt8(6)                     //Unit Id        - Byte 6
     res.funcCode  = buf.readInt8(7)                     //Function Code  - Byte 7
     res.byteCount = Math.abs(buf.readInt8(8))           //Byte Count     - Byte 8
+    if(res.byteCount==0){res.byteCount=1}
     res.value    = buf.readIntBE(9,res.byteCount)       //Data           - Bytes 9+
     
   
@@ -197,7 +198,13 @@ function makeDataPacket(transId,protoId,unitId,funcCode,address,data,length){
     buf.writeUInt8(unitId,6)
     buf.writeUInt8(funcCode,7)
     buf.writeUInt16BE(address,8)
-    buf.writeInt16BE(data,10)
+    if(funcCode==1||funcCode==2||funcCode==5){
+        buf.writeUInt16BE(data,10)
+    }
+    else{
+        buf.writeInt16BE(data,10)
+    }
+ 
 
  
     

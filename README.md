@@ -24,7 +24,7 @@ await device.write('hr0',15)
 ## Constructor 
 ``` javascript
 const modbus = require('modbus-tcp-ip')
-const device = modbus(ipAdress,port,unitId)
+const device = modbus(ipAddress,port,unitId)
 ```
 
 
