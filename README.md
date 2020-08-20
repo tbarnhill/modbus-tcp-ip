@@ -66,7 +66,15 @@ Coil                       c            1 Bit       Read / Write
 Input Register             ir           16 Bits     Read Only
 Holding Register           hr           16 Bits     Read / Write
 ```
-
+# Implemented Function Codes
+* FC1 - Read Coil
+* FC2 - Read Input
+* FC3 - Read Holding Registers
+* FC4 - Read Input Registers
+* FC5 - Write Single Coil
+* FC6 - Write Single Register
+* FC15 - Write Multiple Coils
+* FC16 - Write Multiple Registers
 
 
 

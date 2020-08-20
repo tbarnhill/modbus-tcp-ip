@@ -71,7 +71,7 @@ function ModbusTcp(ipAddress,port,unitId){
         let tid = getTid()
      
 
-        let buff = makeDataPacket(tid,0,1,funcCode,address,length)
+        let buff = makeDataPacket(tid,0,1,funcCode,address,null,length)
 
         let packet = {
             onResponce:callback,
@@ -106,7 +106,7 @@ function ModbusTcp(ipAddress,port,unitId){
 
         if (funcCode==5&&value==true){value = 65280} // To force a coil on you send FF00 not 0001
 
-        let buff = makeDataPacket(tid,0,rtn.unitId,funcCode,address,value)
+        let buff = makeDataPacket(tid,0,rtn.unitId,funcCode,address,value,length)
 
    
         let packet = {
@@ -138,9 +138,6 @@ function ModbusTcp(ipAddress,port,unitId){
 
     }
   
-
-    
-  
     let getTid=()=>{
         if(lastTid>rtn.packetBufferLength){lastTid=0}
         return lastTid++
@@ -157,9 +154,10 @@ function parseResponse(buf){
     res.unitId    = buf.readInt8(6)                     //Unit Id        - Byte 6
     res.funcCode  = buf.readInt8(7)                     //Function Code  - Byte 7
     res.byteCount = Math.abs(buf.readInt8(8))           //Byte Count     - Byte 8
-    if(res.byteCount==0){res.byteCount=1}
-    res.value    = buf.readIntBE(9,res.byteCount)       //Data           - Bytes 9+
-    
+    if(buf.length>9){
+        res.value    = buf.readIntBE(9,buf.length-9)       //Data           - Bytes 9+
+    }
+
   
 
 
@@ -170,27 +168,20 @@ function makeDataPacket(transId,protoId,unitId,funcCode,address,data,length){
     if(typeof(data)=="boolean"&&data){data = 1}
     if(typeof(data)=="boolean"&&!data){data = 0}
 
-    let byteCount = 6
-    if(length){
-        byteCount=byteCount+length
-    }
+    
+    if(address==0){address=65535}
+    else{address=address-1}
 
-    let buf = Buffer.alloc(12)
+    let dataBytes = 0
+    if(funcCode==15){dataBytes=length}
+    if(funcCode==16){dataBytes=length*2}
 
-    if(address==0)[
-        address=65535
-    ]
-    else{
-        address=address-1
-    }
+    let bufferLength=12
+    if(funcCode==15||funcCode==16){bufferLength = 13 + dataBytes}
 
- 
-    unitId = parseInt(unitId)
-    transId = parseInt(transId)
-    protoId = parseInt(protoId)
-    funcCode = parseInt(funcCode)
-    byteCount = parseInt(byteCount)
-    data = parseInt(data)
+    let byteCount = bufferLength - 6
+
+    let buf = Buffer.alloc(bufferLength)
 
     buf.writeUInt16BE(transId,0)
     buf.writeUInt16BE(protoId,2)
@@ -198,15 +189,20 @@ function makeDataPacket(transId,protoId,unitId,funcCode,address,data,length){
     buf.writeUInt8(unitId,6)
     buf.writeUInt8(funcCode,7)
     buf.writeUInt16BE(address,8)
-    if(funcCode==1||funcCode==2||funcCode==5){
+
+   
+    if(funcCode==1||funcCode==2||funcCode==3||funcCode==4){
+        buf.writeUInt16BE(length,10)
+    }
+    if(funcCode==5||funcCode==6){
         buf.writeUInt16BE(data,10)
     }
-    else{
-        buf.writeInt16BE(data,10)
+    if(funcCode==15||funcCode==16){
+        buf.writeInt16BE(length,10)
+        buf.writeUInt8(dataBytes,12)
+        buf.writeInt32BE(data,13)
     }
- 
 
- 
     
     return buf
 
